@@ -1,70 +1,164 @@
+import os
 import random
+from datetime import datetime
 
-# Step 1: Lists of Subjects, Actions, and Places/Objects
-subjects = [
-    "SRK",
-    "Salman Khan",
-    "PM Modi",
-    "A Cow",
-    "Amit Shah",
-    "Virat Kohli",
-    "A Random Uncle",
-    "Deepika Padukone",
-    "Ranveer Singh",
-    "A Rickshaw Driver",
-    "Alia Bhatt",
-    "A School Kid",
-    "An Auto",
-    "Baba Ramdev",
+# Define categories and related word banks
+word_bank = {
+    "Politics": {
+        "subjects": [
+            "PM Modi",
+            "Amit Shah",
+            "Rahul Gandhi",
+            "Baba Ramdev",
+            "Election Commission",
+        ],
+        "actions": [
+            "declares war on",
+            "bans",
+            "throws chappals at",
+            "meditates with",
+            "celebrates victory with",
+        ],
+        "places": [
+            "in Lok Sabha",
+            "on Rajpath",
+            "near Rashtrapati Bhavan",
+            "on top of Parliament",
+            "inside RBI office",
+        ],
+    },
+    "Bollywood": {
+        "subjects": [
+            "SRK",
+            "Salman Khan",
+            "Alia Bhatt",
+            "Ranveer Singh",
+            "Karan Johar",
+        ],
+        "actions": [
+            "dances with",
+            "argues with",
+            "launches movie with",
+            "eats biryani with",
+            "cries for",
+        ],
+        "places": [
+            "at Film City",
+            "in Bandra",
+            "on Instagram Live",
+            "in Koffee with Karan",
+            "on a red carpet",
+        ],
+    },
+    "Sports": {
+        "subjects": [
+            "Virat Kohli",
+            "MS Dhoni",
+            "Neeraj Chopra",
+            "Sania Mirza",
+            "KL Rahul",
+        ],
+        "actions": [
+            "throws bat at",
+            "dances with",
+            "eats protein shake with",
+            "wins against",
+            "gets run out by",
+        ],
+        "places": [
+            "in Wankhede Stadium",
+            "at IPL auction",
+            "during practice",
+            "on commentary",
+            "in a wrestling ring",
+        ],
+    },
+    "Food": {
+        "subjects": [
+            "A Pani Puri Wala",
+            "Zomato Guy",
+            "A hungry uncle",
+            "Baba Ramdev",
+            "A Vada Pav",
+        ],
+        "actions": [
+            "jumps into",
+            "declares love for",
+            "starts fight over",
+            "sings to",
+            "runs away from",
+        ],
+        "places": [
+            "a biryani plate",
+            "at Haldiram's",
+            "inside a samosa",
+            "on Swiggy",
+            "with a dosa in hand",
+        ],
+    },
+}
+
+reporters = [
+    "Arnab Goswami",
+    "Ravish Kumar",
+    "A Random YouTuber",
+    "Aj Tak Insider",
+    "Your Neighbor",
 ]
-
-actions = [
-    "dances on",
-    "declares war against",
-    "eats",
-    "argues with",
-    "meditates on",
-    "sings to",
-    "runs away from",
-    "bans",
-    "rides",
-    "faints at the sight of",
-    "throws chappals at",
-    "launches new app with",
-    "paints",
-    "arrests",
+sources = [
+    "FakeTimes",
+    "News9",
+    "ZeeGullible",
+    "India Troll News",
+    "Whatsapp University",
 ]
+emojis = ["😂", "🔥", "😱", "💥", "🚨", "🤣", "🤯", "🥴"]
 
-places_objects = [
-    "a buffalo near India Gate",
-    "a pani puri stall",
-    "on Mars",
-    "in a Mumbai local train",
-    "at a wedding baraat",
-    "with a tandoori chicken",
-    "on top of Qutub Minar",
-    "at Marine Drive",
-    "inside a coconut tree",
-    "on a PUBG livestream",
-    "in a Delhi traffic jam",
-    "at Gateway of India",
-    "with a dosa",
-    "in a Lonavala resort",
-]
 
-# Step 2: Loop to keep generating headlines
+def generate_headline(category):
+    subject = random.choice(word_bank[category]["subjects"])
+    action = random.choice(word_bank[category]["actions"])
+    place = random.choice(word_bank[category]["places"])
+    emoji = random.choice(emojis)
+    reporter = random.choice(reporters)
+    source = random.choice(sources)
+    timestamp = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+
+    headline = f"[{timestamp}] BREAKING: {subject} {action} {place}! {emoji}\nReported by {reporter} | Source: {source}"
+    return headline
+
+
+# Save headlines to a file
+def save_headline_to_file(headline):
+    with open("fake_headlines.txt", "a", encoding="utf-8") as file:
+        file.write(headline + "\n\n")
+
+
+# Program loop
 while True:
-    # Pick random elements
-    subject = random.choice(subjects)
-    action = random.choice(actions)
-    place_object = random.choice(places_objects)
+    print("\n📢 Choose a category:")
+    for idx, cat in enumerate(word_bank.keys(), start=1):
+        print(f"{idx}. {cat}")
+    choice = input("Enter the number of your choice (or 'q' to quit): ").strip().lower()
 
-    # Format and print headline
-    headline = f"BREAKING: {subject} {action} {place_object}!"
+    if choice == "q":
+        print("👋 Thanks for using Fake News Generator. Stay fake, stay fun!")
+        break
+
+    try:
+        choice = int(choice)
+        category = list(word_bank.keys())[choice - 1]
+    except:
+        print("❌ Invalid input. Try again.")
+        continue
+
+    headline = generate_headline(category)
     print("\n📰", headline)
+    save_headline_to_file(headline)
 
-    # Ask user if they want another headline
-    another = input("\nWant another fake headline? (yes/no): ").strip().lower()
-    if another != "y":
-        print("👋 Exiting... Stay fake, stay fun!")
+    again = input("\nGenerate another? (y/n): ").strip().lower()
+    if again != "y":
+        print("👍 Exiting now. Headlines saved in 'fake_headlines.txt'")
+        print("📂 Opening file in Notepad...")
+        os.system("notepad fake_headlines.txt")
         break
